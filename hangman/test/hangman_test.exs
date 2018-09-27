@@ -14,29 +14,29 @@ defmodule HangmanTest do
 
   test "New Game Word to Guess Exists" do
     new_game = Hangman.new_game()
-    assert String.length(new_game.word_to_guess) > 0
+    assert String.length(new_game.word) > 0
   end
 
   test "New Game Letters Guessed is Empty" do
     new_game = Hangman.new_game()
-    assert new_game.letters_guessed == []
+    assert new_game.guessed == []
   end
 
   test "Tally Updated Correctly" do
     current_state = %Hangman.Game{
-      game_state:      :Drinking,
-      turns_left:      6,
-      word_to_guess:   "Balmer Index",
-      letters_guessed: "bac" |> String.codepoints()
+      game_state: :Drinking,
+      turns_left: 6,
+      word:       "balmer",
+      guessed:    ["a", "b", "c"]
     }
 
     return_state = %Hangman.Game{
-      game_state:      :Drinking,
-      turns_left:      6,
-      letters_guessed: "bac" |> String.codepoints()
+      game_state: :Drinking,
+      turns_left: 6,
+      word:       ["b", "a", "_", "_", "_", "_"],
+      guessed:    ["a", "b", "c"]
     }
 
-    # Why Not Hangman.tally(current_state)?
-    assert Hangman.Game.tally(current_state) == return_state
+    assert Hangman.tally(current_state) == return_state
   end
 end
