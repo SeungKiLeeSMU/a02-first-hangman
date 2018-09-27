@@ -22,4 +22,22 @@ defmodule HangmanTest do
     assert new_game.letters_guessed == []
   end
 
+  test "Tally Updated Correctly" do
+    current_state = %Hangman.Game{
+      game_state:      :Drinking,
+      turns_left:      6,
+      word_to_guess:   "Balmer Index",
+      letters_guessed: "bac" |> String.codepoints()
+    }
+
+    return_state = %Hangman.Game{
+      game_state:      :Drinking,
+      turns_left:      6,
+      letters_guessed: "bac" |> String.codepoints()
+    }
+
+    check_state = Hangman.Game.tally(current_state)
+
+    assert check_state == return_state
+  end
 end
