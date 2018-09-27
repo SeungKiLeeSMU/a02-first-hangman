@@ -4,7 +4,7 @@ defmodule Dictionary.WordList do
     word_list()
     |> Enum.random()
   end
-  
+
   def word_list do
     "../../assets/words.txt"
     |> Path.expand(__DIR__)
