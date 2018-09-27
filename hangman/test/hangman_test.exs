@@ -36,8 +36,7 @@ defmodule HangmanTest do
       letters_guessed: "bac" |> String.codepoints()
     }
 
-    check_state = Hangman.Game.tally(current_state)
-
-    assert check_state == return_state
+    # Why Not Hangman.tally(current_state)?
+    assert Hangman.Game.tally(current_state) == return_state
   end
 end
