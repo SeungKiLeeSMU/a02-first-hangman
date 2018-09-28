@@ -35,8 +35,7 @@ defmodule HangmanTest do
       game_state: :Drinking,
       turns_left: 6,
       letters:    ["b", "a", "_", "_", "_", "_"],
-      used:       ["a", "b", "c"],
-      last_guess: "c"
+      used:       ["a", "b", "c"]
     }
 
     assert Hangman.tally(current_state) == return_state
