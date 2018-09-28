@@ -14,7 +14,7 @@ defmodule HangmanTest do
 
   test "New Game Word to Guess Exists" do
     new_game = Hangman.new_game()
-    assert String.length(new_game.letters) > 0
+    assert new_game.letters |> length() > 0
   end
 
   test "New Game Letters Guessed is Empty" do
@@ -26,8 +26,8 @@ defmodule HangmanTest do
     current_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 6,
-      letters:    "balmer",
-      used:       Enum.sort (["b", "a", "c"]),
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c"] |> Enum.sort(),
       last_guess: "c"
     }
 
@@ -41,4 +41,17 @@ defmodule HangmanTest do
     assert Hangman.tally(current_state) == return_state
   end
 
+  test "See if Lost Works" do
+    curr_state = %Hangman.Game{
+      game_state: :Drinking,
+      turns_left: 1,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k", "u", "o", "p", "q", "n"] |> Enum.sort(),
+      last_guess: "n"
+    }
+
+    return_state = Hangman.make_move(curr_state, "k")
+    IO.puts Hangman.tally(return_state).game_state
+    assert false
+  end
 end

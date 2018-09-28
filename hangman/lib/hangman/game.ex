@@ -29,12 +29,12 @@ defmodule Hangman.Game do
     }
   end
 
-  def make_move(%Hangman.Game{game_state: :won}, guess) do
+  def make_move(%Hangman.Game{game_state: :won}, _guess) do
     "Winner Winner Chicken Dinner. You're the MAN."
     |> IO.puts
   end
 
-  def make_move(%Hangman.Game{game_state: :lost}, guess) do
+  def make_move(%Hangman.Game{game_state: :lost}, _guess) do
     "You are a LOSER. Just give up."
     |> IO.puts
   end
@@ -47,10 +47,12 @@ defmodule Hangman.Game do
   # Utility Functions
   defp new_word() do
     Dictionary.random_word()
+    |> String.codepoints()
   end
 
   defp show_letter(letters, used) do
-    String.codepoints(letters)
+    # String.codepoints(letters)
+    letters
     |> Enum.map( &display &1, &1 in used )
   end
 
@@ -58,23 +60,17 @@ defmodule Hangman.Game do
   defp display(_, false),     do: "_"
 
   defp update_game_state(game, guess) do
-    # word                = game.letters
-    # currently_used      = game.used
-    # turns_left          = game.turns_left
-    # guess               = guess
-    # currently_displayed = show_letter(game.letters, game.used)
-    # check_for_good      = guess in letters and not in used
 
     curr_game = eval_guess(
       game.letters,
       tally(game).letters,
       game.turns_left,
-      game.used,
-      guess
+      is_used?(game.used, guess),
+      is_good?(game.letters, guess)
     )
-    curr_turn =    update_turn(game.turns_left, curr_game)
-    curr_display = update_letters(game.letters, guess, curr_game)
-    curr_used =    add_to_used(game, guess)
+    curr_turn    = update_turn(game.turns_left, curr_game)
+    curr_display = update_letters(game, guess, curr_game)
+    curr_used    = add_to_used(game, guess)
 
     %Hangman.Game{
       game |
@@ -97,37 +93,50 @@ defmodule Hangman.Game do
     #         -> bad guess
     #         -> good guess
     # General
-    defp eval_guess(), do: :lost
-    defp eval_guess(), do: :won
-    defp eval_guess(), do: :already_used
-    defp eval_guess(), do: :good_guess
-    defp eval_guess(), do: :bad_guess
 
-    # <turns_left>
-    # decrement by 1 if :bad_guess
-    defp update_turn(turn, :bad_guess), do: turn-1
-    defp update_turn(turn, _), do: turn
+  defp is_good?(letters, guess), do: guess in letters
+  defp is_used?(used, guess),    do: guess in used
 
-    # <letters>
-    # add the guess to used, and run show_letter function
-    # Show letter in string if you've won
-    defp update_letters(letters, guess, :won) do
-      guess
-      |> add_to_used().used
-      |> show_letter(letters)
-      |> Enum.join()
-    end
+  # If turns = 0, you've lost
+  defp eval_guess(_, _, 0, _, _),       do: :lost
+  # If your letter == game letter
+  defp eval_guess(word, word, _, _, _), do: :won
+  # If the guess is in used
+  defp eval_guess(_, _, _, true, _),    do: :already_used
+  # If the guess is in letter, good
+  defp eval_guess(_, _, _, _, true),    do: :good_guess
+  # else, bad
+  defp eval_guess(_, _, _, _, false),   do: :bad_guess
 
-    defp update_letters(letters, guess, _) do
-      guess
-      |> add_to_used().used
-      |> show_letter(letters)
-    end
+  # <turns_left>
+  # decrement by 1 if :bad_guess
+  defp update_turn(turn, :bad_guess), do: turn-1
+  defp update_turn(turn, _),          do: turn
 
-    # <used>
-    # prepend the guess to used and sort
-    defp add_to_used(game, guess) do
-      [guess | game.used] |> Enum.sort()
-    end
+  # <letters>
+  # add the guess to used, and run show_letter function
+  # Show letter in string if you've won
+  defp update_letters(game, guess, :won) do
+    new_used = guess
+    |> add_to_used(game)
+
+    new_used.used
+    |> show_letter(game.letters)
+    |> Enum.join()
+  end
+
+  defp update_letters(game, guess, _) do
+    new_used = guess
+    |> add_to_used(game)
+
+    new_used.used
+    |> show_letter(game.letters)
+  end
+
+  # <used>
+  # prepend the guess to used and sort
+  defp add_to_used(game, guess) do
+    [guess | game.used] |> Enum.sort()
+  end
 
 end
