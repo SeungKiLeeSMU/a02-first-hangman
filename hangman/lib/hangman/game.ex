@@ -7,7 +7,7 @@ defmodule Hangman.Game do
             used:       [],
             last_guess: ""
 
-  # API
+  # Initialize New Game
   def new_game() do
     new_word = new_word()
 
@@ -16,7 +16,6 @@ defmodule Hangman.Game do
     }
   end
 
-  # Utility Function
   defp new_word() do
     Dictionary.random_word()
     |> String.codepoints()

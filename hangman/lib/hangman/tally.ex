@@ -1,5 +1,18 @@
 defmodule Hangman.Tally do
 
+  def tally( game = %Hangman.Game{ game_state: :won } ) do
+    # %Hangman.Game{
+    #   game |
+    #   letters: game.letters
+    #   |> Enum.join()
+    # }
+    game
+  end
+
+  def tally( game = %Hangman.Game{ game_state: :lost} ) do
+    game
+  end
+
   def tally(game) do
     displayed = show_letter(game.letters, game.used)
 
@@ -7,11 +20,10 @@ defmodule Hangman.Tally do
       game_state: game.game_state,
       turns_left: game.turns_left,
       letters:    displayed,
-      used:       Enum.sort(game.used)
+      used:       game.used |> Enum.sort()
     }
   end
 
-  # Utility Functions
   defp show_letter(letters, used) do
     letters
     |> Enum.map( &display &1, &1 in used )
