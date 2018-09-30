@@ -41,17 +41,26 @@ defmodule HangmanTest do
     assert Hangman.tally(current_state) == return_state
   end
 
-  test "See if Lost Works" do
+  test "Guess updates used" do
     curr_state = %Hangman.Game{
       game_state: :Drinking,
-      turns_left: 1,
+      turns_left: 5,
       letters:    "balmer" |> String.codepoints(),
-      used:       ["b", "a", "c", "k", "u", "o", "p", "q", "n"] |> Enum.sort(),
-      last_guess: "n"
+      used:       ["b", "a", "c", "k"] |> Enum.sort(),
+      last_guess: "k"
     }
 
-    return_state = Hangman.make_move(curr_state, "k")
-    IO.puts Hangman.tally(return_state).game_state
-    assert false
+    return_state = %Hangman.Game{
+      game_state: :Drinking,
+      turns_left: 5,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k", "m"] |> Enum.sort(),
+      last_guess: "m"
+    }
+
+    {cmp_state, cmp_tally} = Hangman.make_move(curr_state, "m")
+    assert {cmp_state, cmp_tally} == {return_state, Hangman.tally(return_state)}
   end
+
+
 end
