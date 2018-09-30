@@ -16,6 +16,7 @@ defmodule Hangman.Game do
     }
   end
 
+  # Utility Funciton
   defp new_word() do
     Dictionary.random_word()
     |> String.codepoints()

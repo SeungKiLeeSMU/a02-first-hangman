@@ -9,9 +9,7 @@ defmodule Hangman.Tally do
     game
   end
 
-  def tally( game = %Hangman.Game{ game_state: :lost} ) do
-    game
-  end
+  def tally( game = %Hangman.Game{ game_state: :lost} ), do: game
 
   def tally(game) do
     displayed = show_letter(game.letters, game.used)
@@ -24,12 +22,13 @@ defmodule Hangman.Tally do
     }
   end
 
+  # Utility Function
   defp show_letter(letters, used) do
     letters
     |> Enum.map( &display &1, &1 in used )
   end
 
-  defp display(letter, true), do: letter
-  defp display(_, false),     do: "_"
+  defp display(letter, true),     do: letter
+  defp display(_, false),         do: "_"
 
 end
