@@ -51,16 +51,57 @@ defmodule HangmanTest do
     }
 
     return_state = %Hangman.Game{
-      game_state: :Drinking,
+      game_state: :good_guess,
       turns_left: 5,
       letters:    "balmer" |> String.codepoints(),
       used:       ["b", "a", "c", "k", "m"] |> Enum.sort(),
       last_guess: "m"
     }
 
-    {cmp_state, cmp_tally} = Hangman.make_move(curr_state, "m")
-    assert {cmp_state, cmp_tally} == {return_state, Hangman.tally(return_state)}
+    { cmp_state, cmp_tally } = curr_state |> Hangman.make_move("m")
+    assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
   end
 
+  test "Check for already used" do
+    curr_state = %Hangman.Game{
+      game_state: :Drinking,
+      turns_left: 5,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k"] |> Enum.sort(),
+      last_guess: "k"
+    }
+
+    return_state = %Hangman.Game{
+      game_state: :already_used,
+      turns_left: 5,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k"] |> Enum.sort(),
+      last_guess: "k"
+    }
+
+    { cmp_state, cmp_tally } = curr_state |> Hangman.make_move("a")
+    assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
+  end
+
+  test "Checks for Victory" do
+    curr_state = %Hangman.Game{
+      game_state: :Drinking,
+      turns_left: 5,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k", "m", "l", "e"] |> Enum.sort(),
+      last_guess: "e"
+    }
+
+    return_state = %Hangman.Game{
+      game_state: :won,
+      turns_left: 5,
+      letters:    "balmer" |> String.codepoints(),
+      used:       ["b", "a", "c", "k", "m", "l", "e", "r"] |> Enum.sort(),
+      last_guess: "r"
+    }
+
+    { cmp_state, cmp_tally } = curr_state |> Hangman.make_move("r")
+    assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
+  end
 
 end
