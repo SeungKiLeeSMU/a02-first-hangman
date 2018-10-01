@@ -22,7 +22,7 @@ defmodule HangmanTest do
     assert new_game.used == []
   end
 
-  test "Tally Updated Correctly" do
+  test "tally() Updated Correctly" do
     current_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 6,
@@ -35,13 +35,14 @@ defmodule HangmanTest do
       game_state: :Drinking,
       turns_left: 6,
       letters:    ["b", "a", "_", "_", "_", "_"],
-      used:       ["a", "b", "c"]
+      used:       ["a", "b", "c"],
+      last_guess: "c"
     }
 
     assert Hangman.tally(current_state) == return_state
   end
 
-  test "Mave move updates Tally" do
+  test "make_move() updates Tally" do
     curr_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 5,
@@ -62,7 +63,7 @@ defmodule HangmanTest do
     assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
   end
 
-  test "Check for already used" do
+  test "Check for Guessing Value that is Already Used" do
     curr_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 5,
@@ -83,7 +84,7 @@ defmodule HangmanTest do
     assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
   end
 
-  test "Checks for Victory" do
+  test "Checks for Victory!" do
     curr_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 5,
@@ -104,7 +105,7 @@ defmodule HangmanTest do
     assert { cmp_state, cmp_tally } == { return_state, return_state |> Hangman.tally() }
   end
 
-  test "Checks for Lost" do
+  test "Checks for Defeat :(" do
     curr_state = %Hangman.Game{
       game_state: :Drinking,
       turns_left: 1,

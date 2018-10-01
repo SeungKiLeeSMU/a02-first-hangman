@@ -1,21 +1,21 @@
 defmodule Hangman.Tally do
 
+  # Winning or Losing will just return the current game state with all letters
   def tally( game = %Hangman.Game{ game_state: :won } ), do: game
   def tally( game = %Hangman.Game{ game_state: :lost} ), do: game
 
+  # Display the letters with underscore if the the letter is not guessed.
   def tally(game) do
     displayed = show_letter(game.letters, game.used)
 
-    %Hangman.Game{
-      game_state: game.game_state,
-      turns_left: game.turns_left,
-      letters:    displayed,
-      used:       game.used |> Enum.sort(),
-      last_guess: game.last_guess
-    }
+    # Return the struct with updated letter and sorted used
+    %Hangman.Game{ game |
+                   letters: displayed,
+                   used:    game.used |> Enum.sort()
+                 }
   end
 
-  # Utility Function
+  # Utility Function - check if the letter is in used
   defp show_letter(letters, used) do
     letters
     |> Enum.map( &display &1, &1 in used )
