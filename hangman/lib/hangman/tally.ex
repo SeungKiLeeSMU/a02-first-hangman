@@ -1,14 +1,6 @@
 defmodule Hangman.Tally do
 
-  def tally( game = %Hangman.Game{ game_state: :won } ) do
-    # %Hangman.Game{
-    #   game |
-    #   letters: game.letters
-    #   |> Enum.join()
-    # }
-    game
-  end
-
+  def tally( game = %Hangman.Game{ game_state: :won } ), do: game
   def tally( game = %Hangman.Game{ game_state: :lost} ), do: game
 
   def tally(game) do
@@ -18,7 +10,8 @@ defmodule Hangman.Tally do
       game_state: game.game_state,
       turns_left: game.turns_left,
       letters:    displayed,
-      used:       game.used |> Enum.sort()
+      used:       game.used |> Enum.sort(),
+      last_guess: game.last_guess
     }
   end
 
