@@ -1,15 +1,16 @@
 defmodule Hangman.MakeMove do
 
   # return the updated game and tally of the updated game
+  @spec make_move( struct(), binary() ) :: { map(), map() }
   def make_move(game, guess) do
     updated_game = handle_guess(game, guess)
 
     { updated_game, updated_game |> Hangman.tally() }
   end
 
-  # return the state of current game using and
+  # return the state of current game
+  @spec handle_guess( struct(), binary() ) :: map()
   defp handle_guess(game, guess) do
-    #
     curr_state = game
     |> update_state(guess)
 
@@ -22,6 +23,7 @@ defmodule Hangman.MakeMove do
   end
 
   # Retrieve game_state atom
+  @spec update_state( struct(), binary() ) :: atom()
   defp update_state(game, guess) do
     next_state = %Hangman.Game{ game |
                                 used: [guess | game.used]
@@ -50,6 +52,7 @@ defmodule Hangman.MakeMove do
   # (5) if it's not a good, it is                             -> :bad_guess
   #############################################################################
 
+  @spec get_state( boolean(), [binary()], [binary()], 1..7, boolean() ) :: atom()
   defp get_state(true, _   , _   , _, _   ),     do: :already_used
   defp get_state(_   , word, word, _, _   ),     do: :won
   defp get_state(_   , _   , _   , 1, _   ),     do: :lost
@@ -57,21 +60,25 @@ defmodule Hangman.MakeMove do
   defp get_state(_   , _   , _   , _, _   ),     do: :bad_guess
 
   # Booleans to check for :good_guess and
+  @spec is_good?( [binary()], binary()) :: boolean()
   defp is_good?(letters, guess),                 do: guess in letters
   defp is_used?(used, guess),                    do: guess in used
 
   # add the guess to used if the game_state != :already_used
+  @spec update_used( struct(), binary(), atom() ) :: [binary()]
   defp update_used(game, _, :already_used),      do: game.used
   defp update_used(game, guess, _),              do: %Hangman.Game{ game |
                                                       used: [guess | game.used]
                                                       |> Enum.sort() }.used
 
   # decrement the turns iff :lost or it is :bad_guess
+  @spec update_turn( 1..7, atom() ) :: 0..7
   defp update_turn(turn, :lost),                 do: turn - 1
   defp update_turn(turn, :bad_guess),            do: turn - 1
   defp update_turn(turn, _),                     do: turn
 
   # change last_guess to input iff game_state is not :already_used
+  @spec update_last( binary(), binary(), atom() ) :: binary()
   defp update_last(last, _guess, :already_used), do: last
   defp update_last(_last, guess, _),             do: guess
 

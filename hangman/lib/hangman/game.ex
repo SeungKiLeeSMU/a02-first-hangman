@@ -8,6 +8,7 @@ defmodule Hangman.Game do
             last_guess: ""
 
   # Initialize New Game
+  @spec new_game() :: map()
   def new_game() do
     new_word = new_word()
 
@@ -15,6 +16,7 @@ defmodule Hangman.Game do
   end
 
   # Utility Funciton - a random word converted to a list
+  @spec new_word() :: [binary()]
   defp new_word() do
     Dictionary.random_word()
     |> String.codepoints()
