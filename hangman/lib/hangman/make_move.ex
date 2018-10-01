@@ -63,8 +63,8 @@ defmodule Hangman.MakeMove do
   # add the guess to used if the game_state != :already_used
   defp update_used(game, _, :already_used),      do: game.used
   defp update_used(game, guess, _),              do: %Hangman.Game{ game |
-                                                        used: [guess | game.used]
-                                                        |> Enum.sort() }.used
+                                                      used: [guess | game.used]
+                                                      |> Enum.sort() }.used
 
   # decrement the turns iff :lost or it is :bad_guess
   defp update_turn(turn, :lost),                 do: turn - 1
