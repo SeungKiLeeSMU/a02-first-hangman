@@ -11,8 +11,10 @@ defmodule Hangman.MakeMove do
   # return the state of current game
   @spec handle_guess( struct(), binary() ) :: map()
   defp handle_guess(game, guess) do
+    guess = String.downcase(guess)
+
     curr_state = game
-    |> update_state(guess)
+    |> update_state(guess, is_valid?(guess) )
 
     %Hangman.Game{ game |
                    game_state: curr_state,
@@ -22,9 +24,19 @@ defmodule Hangman.MakeMove do
                  }
   end
 
+  defp is_valid?(guess) do
+    String.match?(guess, ~r/^[a-z]$/)
+  end
+
+  @spec update_state( struct(), binary() , boolean() ) :: atom()
+  # Raise Error if input is not valid.
+  defp update_state(_game, _guess, false) do
+    raise ArgumentError,
+    message: "Invalid Letter. Please choose an alphabet."
+  end
+
   # Retrieve game_state atom
-  @spec update_state( struct(), binary() ) :: atom()
-  defp update_state(game, guess) do
+  defp update_state(game, guess, true) do
     next_state = %Hangman.Game{ game |
                                 used: [guess | game.used]
                                 |> Enum.sort()
@@ -60,7 +72,7 @@ defmodule Hangman.MakeMove do
   defp get_state(_   , _   , _   , _, _   ),     do: :bad_guess
 
   # Booleans to check for :good_guess and
-  @spec is_good?( [binary()], binary()) :: boolean()
+  @spec is_good?( [binary()], binary() ) :: boolean()
   defp is_good?(letters, guess),                 do: guess in letters
   defp is_used?(used, guess),                    do: guess in used
 
