@@ -25,6 +25,6 @@ defmodule Hangman.Tally do
 
   @spec display( [binary()], boolean() ) :: binary()
   defp display(letter, true),     do: letter
-  defp display(_, false),         do: "_"
+  defp display(_,     false),     do: "_"
 
 end

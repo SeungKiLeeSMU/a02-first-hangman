@@ -50,6 +50,12 @@ defmodule Hangman.MakeMove do
              )
   end
 
+  # TODO:
+  # Rework the logic to:
+  # |> get rid of already_used check,
+  # |> derive win from good
+  # |> derive lost from bad
+  # |> Reduce the last logic to 3
 
   # Utility Functions
 
@@ -76,13 +82,6 @@ defmodule Hangman.MakeMove do
   defp is_good?(letters, guess),                 do: guess in letters
   defp is_used?(used, guess),                    do: guess in used
 
-  # add the guess to used if the game_state != :already_used
-  @spec update_used( struct(), binary(), atom() ) :: [binary()]
-  defp update_used(game, _, :already_used),      do: game.used
-  defp update_used(game, guess, _),              do: %Hangman.Game{ game |
-                                                      used: [guess | game.used]
-                                                      |> Enum.sort() }.used
-
   # decrement the turns iff :lost or it is :bad_guess
   @spec update_turn( 1..7, atom() ) :: 0..7
   defp update_turn(turn, :lost),                 do: turn - 1
@@ -93,5 +92,20 @@ defmodule Hangman.MakeMove do
   @spec update_last( binary(), binary(), atom() ) :: binary()
   defp update_last(last, _guess, :already_used), do: last
   defp update_last(_last, guess, _),             do: guess
+
+    # TODO:
+  # Rather than writing a function to return the new value for used,
+  # I think it might be easier to write transformations that update the overall state
+
+  # add the guess to used if the game_state != :already_used
+  @spec update_used( struct(), binary(), atom() ) :: [binary()]
+  defp update_used(game, _, :already_used) do
+    game.used
+  end
+
+  defp update_used(game, guess, _) do
+    %Hangman.Game{ game | used: [guess | game.used] |> Enum.sort()
+      }.used
+  end
 
 end

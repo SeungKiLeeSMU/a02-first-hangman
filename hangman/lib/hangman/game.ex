@@ -1,5 +1,9 @@
 defmodule Hangman.Game do
 
+  # TODO:
+  # Wrapp the state in separate module
+  # TODO:
+  # Move the struct and move logic to state.ex
   # Game Struct
   defstruct game_state: :initializing,
             turns_left: 7,
